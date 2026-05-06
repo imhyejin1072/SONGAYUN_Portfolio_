@@ -1,0 +1,135 @@
+:root {
+    --bg: #0a0a0a;
+    --text: #ffffff;
+    --muted: #888888;
+    --accent: #FFD700;
+    --border: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+/* Header */
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 30px;
+    z-index: 100;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.6), transparent);
+    border-bottom: none;
+}
+
+.back-link {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.back-link:hover {
+    color: #fff;
+}
+
+.project-title-area h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: 5px;
+}
+
+.project-title-area p {
+    color: var(--muted);
+    font-size: 1rem;
+}
+
+/* Content */
+.content {
+    width: 100%;
+}
+
+.image-section {
+    width: 100%;
+    background: #111;
+}
+
+.full-image {
+    width: 100%;
+    display: block;
+    height: auto;
+}
+
+/* Video Section */
+.video-section {
+    padding: 100px 40px;
+    background: #000;
+    display: flex;
+    justify-content: center;
+}
+
+.video-container {
+    width: 100%;
+    max-width: 1200px;
+}
+
+.section-label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.video-wrapper {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #111;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    border: 1px solid var(--border);
+}
+
+.project-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Footer */
+.footer {
+    padding: 60px 40px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 30px 20px;
+    }
+    .project-title-area h1 {
+        font-size: 1.8rem;
+    }
+    .video-section {
+        padding: 60px 20px;
+    }
+}

@@ -328,6 +328,25 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, { threshold: 0.4 });
 
-    statItems.forEach(el => countObserver.observe(el));
+    /* ══════════════════════════════════════
+       8. BACK TO TOP BUTTON
+    ══════════════════════════════════════ */
+    const backToTop = document.getElementById('back-to-top');
+    if (backToTop) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('active');
+            } else {
+                backToTop.classList.remove('active');
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+    }
 
 });
