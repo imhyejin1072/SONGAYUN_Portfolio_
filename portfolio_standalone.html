@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Song Ayun Portfolio — THINK OUT OF THE FRAME</title>
+    
+    <!-- Inline CSS -->
+    <style>
+/* ============================================================
+   SONG AYUN PORTFOLIO — Pintel-style Dark Theme
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ── Variables ── */
+:root {
+  --bg: #050505;
+  --white: #ffffff;
+  --muted: rgba(255,255,255,0.42);
+  --border: rgba(255,255,255,0.09);
+  --glass: rgba(255,255,255,0.04);
+  --glass-hover: rgba(255,255,255,0.07);
+  --accent: #E8FF47;
+  --font: 'Outfit', sans-serif;
+  --pad-x: clamp(2rem, 7vw, 9rem);
+  --section-gap: clamp(7rem, 14vh, 14rem);
+}
+
+/* ── Reset ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--font);
+  line-height: 1.55;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  cursor: none;
+}
+a { text-decoration: none; color: inherit; cursor: none; }
+img { display: block; max-width: 100%; }
+
+/* ── Noise overlay ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url('https://grainy-gradients.vercel.app/noise.svg');
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 9997;
+}
+
+/* ── Three.js canvas ── */
+#bg-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* ── Custom cursor ── */
+.cursor-dot {
+  position: fixed;
+  width: 8px; height: 8px;
+  background: #fff;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10001;
+  transform: translate(-50%, -50%);
+}
+.cursor-ring {
+  position: fixed;
+  width: 38px; height: 38px;
+  border: 1px solid rgba(255,255,255,0.35);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+  transform: translate(-50%, -50%);
+  transition: width .35s cubic-bezier(.25,1,.5,1),
+              height .35s cubic-bezier(.25,1,.5,1),
+              background .3s, border-color .3s;
+}
+.cursor-ring.hover {
+  width: 68px; height: 68px;
+  background: rgba(255,255,255,0.05);
+  border-color: #fff;
+}
+
+/* ── Header ── */
+.header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  padding: 1.6rem var(--pad-x);
+  background: rgba(5,5,5,0.4);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border-bottom: 1px solid var(--border);
+}
+.logo {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: .18em;
+  margin-right: auto;
+}
+.nav { display: flex; gap: 2.2rem; }
+.nav a {
+  font-size: .8rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  opacity: .5;
+  transition: opacity .25s;
+}
+.nav a:hover { opacity: 1; }
+.btn-outline {
+  font-size: .8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding: .55rem 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  transition: background .3s, border-color .3s;
+}
+.btn-outline:hover { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.35); }
+
+/* ============================================================
+   § 1. HERO
+   ============================================================ */
+.hero {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1920px;
+  min-height: 980px;
+  height: 100svh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 var(--pad-x);
+  overflow: hidden;
+}
+
+/* floating corner tags */
+.hero-tag {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+}
+.hero-tag--tl { top: 6rem; left: var(--pad-x); }
+.tag-label, .tag-num { font-size: 1.8rem; font-weight: 700; line-height: 1; }
+.tag-sub { font-size: .72rem; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+
+/* main title */
+.hero-body { position: relative; z-index: 2; }
+.hero-title {
+  font-size: clamp(4.5rem, 11vw, 13.5rem);
+  font-weight: 800;
+  line-height: .9;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+}
+.h-line { display: block; opacity: 0; transform: translateY(80px); }
+.h-line--outline {
+  -webkit-text-stroke: 1px rgba(255,255,255,.45);
+  color: transparent;
+}
+.hero-desc {
+  margin-top: 2.5rem;
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  color: var(--muted);
+  line-height: 1.7;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+/* bottom bar */
+.hero-bottom {
+  position: absolute;
+  bottom: 3.5rem;
+  left: var(--pad-x);
+  right: var(--pad-x);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  padding-top: 1.5rem;
+  opacity: 0;
+}
+.hero-bottom-left { display: flex; flex-direction: column; gap: .8rem; }
+.hero-scroll-label { font-size: .7rem; text-transform: uppercase; letter-spacing: .15em; color: var(--muted); }
+.scroll-line {
+  width: 60px; height: 1px;
+  background: var(--border);
+  position: relative;
+  overflow: hidden;
+}
+.scroll-line span {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  transform: translateX(-100%);
+  animation: slide-line 2.2s ease-in-out infinite;
+}
+@keyframes slide-line {
+  0%   { transform: translateX(-100%); }
+  50%  { transform: translateX(0); }
+  100% { transform: translateX(100%); }
+}
+.hero-bottom-right { max-width: 320px; font-size: .9rem; color: var(--muted); text-align: right; }
+
+/* ============================================================
+   § 2. PROCESS TABS
+   ============================================================ */
+.process-section {
+  position: relative;
+  z-index: 1;
+  padding: var(--section-gap) var(--pad-x);
+  border-top: 1px solid var(--border);
+}
+.section-intro { margin-bottom: 5rem; }
+.section-tag {
+  display: inline-block;
+  font-size: .65rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: .25em;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: .3rem .8rem;
+  border-radius: 99px;
+  margin-bottom: 1.2rem;
+}
+.section-heading {
+  font-size: clamp(2rem, 4.5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -.01em;
+}
+
+/* Tabs nav */
+.process-tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+  position: relative;
+}
+.tab-indicator {
+  position: absolute;
+  bottom: -1px;
+  height: 2px;
+  background: #fff;
+  transition: left .35s cubic-bezier(.25,1,.5,1), width .35s cubic-bezier(.25,1,.5,1);
+}
+.tab-btn {
+  display: flex;
+  align-items: center;
+  gap: .8rem;
+  padding: 1.4rem 2rem;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: none;
+  font-family: var(--font);
+  font-size: .85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  transition: color .25s;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: rgba(255,255,255,.75); }
+.tab-btn.active { color: #fff; }
+.tab-num { font-size: .7rem; opacity: .5; }
+
+/* Tab panels */
+.process-content { position: relative; overflow: hidden; }
+.tab-panel {
+  display: none;
+  padding: 5rem 0;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .45s ease, transform .45s ease;
+}
+.tab-panel.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+.panel-inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: center;
+}
+.panel-text h3 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  letter-spacing: -.02em;
+}
+.panel-text p {
+  font-size: 1.05rem;
+  color: var(--muted);
+  line-height: 1.8;
+  margin-bottom: 2.5rem;
+}
+.panel-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+}
+.panel-list li {
+  font-size: .85rem;
+  font-weight: 500;
+  padding-left: 1rem;
+  position: relative;
+  color: rgba(255,255,255,.7);
+}
+.panel-list li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--muted);
+}
+.panel-visual {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.panel-glass-card {
+  width: 260px; height: 260px;
+  border-radius: 32px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-size: 4rem;
+  transition: transform .4s ease, background .3s;
+}
+.panel-glass-card:hover { transform: scale(1.04); background: var(--glass-hover); }
+.panel-kw {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   § 3. PROJECTS SLIDER
+   ============================================================ */
+.projects-section {
+  position: relative;
+  z-index: 1;
+  padding: var(--section-gap) 0;
+  border-top: 1px solid var(--border);
+}
+.projects-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 var(--pad-x) 4rem;
+}
+.slider-controls { display: flex; gap: 1rem; }
+.slider-btn {
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--glass);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .25s, border-color .25s;
+}
+.slider-btn:hover { background: var(--glass-hover); border-color: rgba(255,255,255,.3); }
+
+/* Slider */
+.slider-viewport {
+  overflow: hidden;
+  padding-left: var(--pad-x);
+  cursor: grab;
+}
+.slider-viewport.dragging { cursor: grabbing; }
+.slider-track {
+  display: flex;
+  gap: 2rem;
+  transition: transform .6s cubic-bezier(.25,1,.5,1);
+  will-change: transform;
+  user-select: none;
+}
+
+/* Slide card */
+.project-slide {
+  flex: 0 0 420px;
+  display: block;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  overflow: hidden;
+  transition: border-color .35s, transform .5s cubic-bezier(.25,1,.5,1);
+  backdrop-filter: blur(10px);
+}
+.project-slide:hover { border-color: rgba(255,255,255,.25); transform: translateY(-8px); }
+.slide-thumb {
+  width: 100%; height: 280px;
+  overflow: hidden;
+  position: relative;
+}
+.slide-img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  object-position: top;
+  transition: transform .7s cubic-bezier(.25,1,.5,1);
+}
+.project-slide:hover .slide-img { transform: scale(1.06); }
+
+.slide-info { padding: 1.8rem 2rem 2rem; }
+.slide-meta { display: flex; gap: 1rem; margin-bottom: .8rem; }
+.slide-year, .slide-cat { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+.slide-title { font-size: 1.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 1.2rem; }
+.slide-cta {
+  font-size: .78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  transition: color .25s;
+}
+.project-slide:hover .slide-cta { color: #fff; }
+
+/* Progress bar */
+.slider-progress {
+  height: 1px;
+  background: var(--border);
+  margin: 3rem var(--pad-x) 0;
+  border-radius: 1px;
+}
+.slider-progress-fill {
+  height: 100%;
+  background: #fff;
+  border-radius: 1px;
+  width: 33.33%;
+  transition: width .4s ease;
+}
+
+/* ============================================================
+   § 4. PHILOSOPHY
+   ============================================================ */
+.philosophy-section {
+  position: relative;
+  z-index: 1;
+  padding: var(--section-gap) var(--pad-x);
+  border-top: 1px solid var(--border);
+}
+.philosophy-left { position: relative; }
+.philosophy-right { 
+  margin-top: 3.2rem;
+}
+.philosophy-inner {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 8rem;
+  align-items: start;
+}
+.philosophy-title {
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -.02em;
+  margin-top: 0;
+}
+.philosophy-title em {
+  font-style: normal;
+  -webkit-text-stroke: 1px rgba(255,255,255,.4);
+  color: transparent;
+}
+.philosophy-body {
+  font-size: 1rem;
+  color: var(--muted);
+  line-height: 1.75;
+  margin-bottom: 0;
+  font-weight: 400;
+  word-break: keep-all;
+}
+.philosophy-skills { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 2.5rem; }
+.skill-tag {
+  font-size: .75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  padding: .4rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  color: rgba(255,255,255,.7);
+  transition: border-color .25s, color .25s;
+}
+.skill-tag:hover { border-color: rgba(255,255,255,.4); color: #fff; }
+
+/* ============================================================
+   § 5. STATS
+   ============================================================ */
+.stats-section {
+  position: relative;
+  z-index: 1;
+  padding: var(--section-gap) var(--pad-x);
+  border-top: 1px solid var(--border);
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+.stat-item {
+  padding: 3.5rem 2.5rem;
+  border: 1px solid var(--border);
+  background: var(--glass);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  backdrop-filter: blur(8px);
+  transition: background .3s;
+}
+.stat-item:hover { background: var(--glass-hover); }
+.stat-value {
+  font-size: clamp(2.8rem, 5vw, 5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.03em;
+  display: flex;
+  align-items: baseline;
+}
+.stat-suffix { font-size: .55em; font-weight: 700; opacity: .6; }
+.stat-label {
+  font-size: .75rem;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+}
+
+/* ============================================================
+   § 6. AWARDS LIST
+   ============================================================ */
+.awards-section {
+  position: relative;
+  z-index: 1;
+  padding: var(--section-gap) var(--pad-x);
+  border-top: 1px solid var(--border);
+}
+.awards-header { margin-bottom: 4rem; }
+.awards-list { list-style: none; }
+.award-item {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+  padding: 1.8rem 0;
+  border-bottom: 1px solid var(--border);
+  transition: padding-left .3s ease;
+  cursor: default;
+}
+.award-item:hover { padding-left: 1rem; }
+.award-year {
+  font-size: .78rem;
+  font-weight: 600;
+  color: var(--muted);
+  flex-shrink: 0;
+  width: 3rem;
+}
+.award-name {
+  flex: 1;
+  font-size: 1rem;
+  font-weight: 500;
+}
+.award-cat {
+  font-size: .72rem;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   § 7. CONTACT CARDS
+   ============================================================ */
+.contact-section {
+  position: relative;
+  z-index: 1;
+  padding: var(--section-gap) var(--pad-x);
+  border-top: 1px solid var(--border);
+}
+.contact-header { margin-bottom: 5rem; }
+.contact-big-title {
+  font-size: clamp(3rem, 8vw, 9rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -.04em;
+}
+.contact-big-title em {
+  font-style: normal;
+  -webkit-text-stroke: 2px rgba(255,255,255,.55);
+  color: transparent;
+}
+.contact-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+.contact-card {
+  display: flex;
+  flex-direction: column;
+  gap: .8rem;
+  padding: 2.5rem 2rem;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  backdrop-filter: blur(12px);
+  position: relative;
+  transition: background .3s, border-color .35s, transform .4s cubic-bezier(.25,1,.5,1);
+}
+.contact-card:hover {
+  background: var(--glass-hover);
+  border-color: rgba(255,255,255,.25);
+  transform: translateY(-6px);
+}
+.contact-card-icon { font-size: 1.8rem; }
+.contact-card-title { font-size: 1.2rem; font-weight: 700; }
+.contact-card-desc { font-size: .88rem; color: var(--muted); line-height: 1.6; }
+.contact-card-arrow {
+  position: absolute;
+  top: 2rem; right: 2rem;
+  font-size: 1.2rem;
+  opacity: .4;
+  transition: opacity .25s, transform .25s;
+}
+.contact-card:hover .contact-card-arrow { opacity: 1; transform: translate(3px, -3px); }
+
+/* ── Footer ── */
+.footer {
+  position: relative;
+  z-index: 1;
+  border-top: 1px solid var(--border);
+  padding: 2.5rem var(--pad-x);
+}
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: .78rem;
+  color: var(--muted);
+}
+
+/* ── Skills 3-column layout ── */
+.panel-inner--skills {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3.5rem;
+  align-items: start;
+}
+.skill-col h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  letter-spacing: -.02em;
+  color: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.8rem;
+}
+.skill-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+}
+.skill-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.skill-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+  letter-spacing: 0.02em;
+}
+.skill-bar {
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.skill-progress {
+  height: 100%;
+  background: #fff;
+  border-radius: 2px;
+  width: 0;
+  transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ── Education two-column layout ── */
+.panel-inner--edu {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 5rem;
+  align-items: start;
+}
+.edu-col h3 {
+  font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+  font-weight: 700;
+  margin-bottom: 1.2rem;
+  letter-spacing: -.02em;
+}
+.panel-list--profile .info-val {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+.panel-list--profile .info-val small {
+  display: block;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.4rem;
+  opacity: 0.8;
+  order: -1;
+}
+
+/* ── Profile panel overrides ── */
+.panel-inner--profile {
+  grid-template-columns: 1fr;
+  max-width: 820px;
+}
+.panel-desc-small {
+  font-size: .88rem;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 3.5rem;
+  max-width: 560px;
+}
+.panel-list--profile {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.panel-list--profile li {
+  display: flex;
+  align-items: flex-start;
+  gap: 3rem;
+  padding: 1.8rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.panel-list--profile li:first-child {
+  border-top: 1px solid var(--border);
+}
+.panel-list--profile li::before { display: none; }
+.info-key {
+  flex: 0 0 140px;
+  font-size: .7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  padding-top: 0.5rem;
+}
+.info-val {
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--white);
+}
+
+/* ── Scholarship Grid Layout ── */
+.panel-inner--scholarship {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(2rem, 8vw, 8rem);
+  align-items: start;
+  max-width: 1000px;
+}
+.scholar-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+.scholar-item {
+  display: flex;
+  gap: 2rem;
+  line-height: 1.4;
+}
+.s-year {
+  flex: 0 0 80px;
+  font-size: .7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--muted);
+  letter-spacing: 0.15em;
+  padding-top: 0.4rem;
+}
+.s-name {
+  font-size: clamp(1.1rem, 2vw, 1.6rem);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--white);
+}
+.scholar-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 0.5rem 0;
+  width: 100%;
+}
+
+@media (max-width: 900px) {
+  .panel-inner--scholarship {
+    grid-template-columns: 1fr;
+    gap: 4rem;
+  }
+}
+
+/* ── Reveal utility ── */
+.reveal { opacity: 0; transform: translateY(45px); }
+
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+  .panel-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .philosophy-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .philosophy-right { margin-top: 0; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .contact-cards { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .hero-title { font-size: clamp(3rem, 14vw, 6rem); }
+  .stats-grid { grid-template-columns: 1fr; }
+  .projects-header { flex-direction: column; align-items: flex-start; gap: 2rem; }
+  .hero-tag { display: none; }
+  .nav { display: none; }
+  
+  /* Horizontal scroll for Tabs */
+  .process-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0;
+  }
+  .process-tabs::-webkit-scrollbar { display: none; }
+  .tab-btn { 
+    flex: 0 0 auto; 
+    padding: 1.2rem 1.5rem; 
+    font-size: .75rem; 
+  }
+  
+  /* Horizontal scroll for Projects */
+  .slider-viewport {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    padding: 0 20px;
+    margin: 0 -20px;
+    scrollbar-width: none;
+  }
+  .slider-viewport::-webkit-scrollbar { display: none; }
+  .slider-track {
+    display: flex;
+    width: max-content;
+    transform: none !important;
+  }
+  .project-slide { 
+    flex: 0 0 85vw; 
+    margin-right: 15px;
+    scroll-snap-align: center;
+  }
+}
+
+/* ── Back to Top Button ── */
+.back-to-top {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  width: 70px;
+  height: 70px;
+  background: #000;
+  color: #fff;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: none;
+  z-index: 150;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  backdrop-filter: blur(10px);
+}
+.back-to-top.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.back-to-top .arrow {
+  font-size: 24px;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.back-to-top .text {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.back-to-top:hover {
+  background: var(--glass-hover);
+  border-color: rgba(255,255,255,0.4);
+  transform: scale(1.1);
+}
+@media (max-width: 768px) {
+  .back-to-top {
+    width: 60px;
+    height: 60px;
+    bottom: 20px;
+    right: 20px;
+  }
+}
+    </style>
+</head>
+<body>
+
+    <!-- Three.js Canvas for background bubbles -->
+    <canvas id="bg-canvas"></canvas>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" id="cursor-dot"></div>
+    <div class="cursor-ring" id="cursor-ring"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="logo">AYUN.</div>
+        <nav class="nav">
+            <a href="#hero">Home</a>
+            <a href="#process">About</a>
+            <a href="#projects">Work</a>
+            <a href="#contact">Contact</a>
+        </nav>
+        <a href="resume_songayun.pdf" download class="btn-outline">Resume</a>
+    </header>
+
+    <main>
+        <!-- ════════════════════════════════
+             § 1. HERO
+        ════════════════════════════════ -->
+        <section class="hero" id="hero">
+            <div class="hero-tag hero-tag--tl">
+                <span class="tag-label">UI/UX Designer</span>
+            </div>
+
+            <!-- Main title -->
+            <div class="hero-body">
+                <h1 class="hero-title">
+                    <span class="h-line" data-delay="0">THINK OUT</span>
+                    <span class="h-line" data-delay="1">OF THE</span>
+                    <span class="h-line h-line--outline" data-delay="2">FRAME.</span>
+                </h1>
+                <p class="hero-desc" data-delay="3">
+                    디자인의 경계를 허물고,<br>새로운 시각적 가치를 창조하는 디자이너.
+                </p>
+            </div>
+
+            <!-- Bottom bar -->
+            <div class="hero-bottom">
+                <div class="hero-bottom-left">
+                    <span class="hero-scroll-label">SCROLL DOWN</span>
+                    <div class="scroll-line"><span></span></div>
+                </div>
+                <div class="hero-bottom-right">
+                    <p>사용자 중심의 직관적인 인터페이스와<br>감각적인 브랜드 비주얼을 추구합니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════
+             § 2. PROCESS TABS
+        ════════════════════════════════ -->
+        <section class="process-section" id="process">
+            <div class="section-intro reveal">
+                <span class="section-tag">ABOUT ME</span>
+                <h2 class="section-heading">Song Ayun</h2>
+            </div>
+
+            <div class="process-tabs reveal">
+                <div class="tab-indicator"></div>
+                <button class="tab-btn active" data-tab="0">
+                    <span class="tab-num">01</span>
+                    <span class="tab-name">Profile</span>
+                </button>
+                <button class="tab-btn" data-tab="1">
+                    <span class="tab-num">02</span>
+                    <span class="tab-name">Education</span>
+                </button>
+                <button class="tab-btn" data-tab="2">
+                    <span class="tab-num">03</span>
+                    <span class="tab-name">Certifications</span>
+                </button>
+                <button class="tab-btn" data-tab="3">
+                    <span class="tab-num">04</span>
+                    <span class="tab-name">Scholarship</span>
+                </button>
+                <button class="tab-btn" data-tab="4">
+                    <span class="tab-num">05</span>
+                    <span class="tab-name">Skills</span>
+                </button>
+            </div>
+
+            <div class="process-content">
+                <!-- Profile -->
+                <div class="tab-panel active" data-panel="0">
+                    <div class="panel-inner panel-inner--profile">
+                        <div class="panel-text">
+                            <h3>Profile</h3>
+                            <p class="panel-desc-small">사용자 중심의 직관적인 인터페이스와 감각적인 브랜드 비주얼을 추구하는 디자이너 송아윤입니다. UI/UX와 브랜드 아이덴티티를 넘나들며, 각 프로젝트마다 가장 적합한 시각 언어를 찾아냅니다.</p>
+                            <ul class="panel-list panel-list--profile">
+                                <li>
+                                    <span class="info-key">Name</span>
+                                    <span class="info-val">송아윤 (Song Ayun)</span>
+                                </li>
+                                <li>
+                                    <span class="info-key">Date of Birth</span>
+                                    <span class="info-val">2005.09.27</span>
+                                </li>
+                                <li>
+                                    <span class="info-key">Phone</span>
+                                    <span class="info-val">010-5101-5844</span>
+                                </li>
+                                <li>
+                                    <span class="info-key">E-Mail</span>
+                                    <span class="info-val">hj690411@naver.com</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Education -->
+                <div class="tab-panel" data-panel="1">
+                    <div class="panel-inner panel-inner--edu">
+                        <div class="edu-col">
+                            <h3>Education</h3>
+                            <ul class="panel-list panel-list--profile">
+                                <li>
+                                    <span class="info-key">2026.02</span>
+                                    <span class="info-val"><small>숭의여자대학교</small>시각디자인과 졸업</span>
+                                </li>
+                                <li>
+                                    <span class="info-key">2024.02</span>
+                                    <span class="info-val"><small>신일비즈니스 고등학교</small>시각디자인과 졸업</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="edu-col">
+                            <h3>Leadership &amp; Activities</h3>
+                            <ul class="panel-list panel-list--profile">
+                                <li>
+                                    <span class="info-key">2024.04–2024.12</span>
+                                    <span class="info-val"><small>보라매청소년센터</small>환경예술동아리 '아띠' 동아리장</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Certifications -->
+                <div class="tab-panel" data-panel="2">
+                    <div class="panel-inner">
+                        <div class="panel-text">
+                            <h3>Certifications</h3>
+                            <p>실질적인 디자인 역량을 증명하는 국가 공인 자격 및 전문 자격 사항입니다.</p>
+                            <ul class="panel-list panel-list--profile">
+                                <li>
+                                    <span class="info-key">GTQ 1급</span>
+                                    <span class="info-val">그래픽기술자격 1급 (한국생산성본부)</span>
+                                </li>
+                                <li>
+                                    <span class="info-key">컴퓨터그래픽스</span>
+                                    <span class="info-val">운용기능사 (한국산업인력공단)</span>
+                                </li>
+                                <li>
+                                    <span class="info-key">웹디자인</span>
+                                    <span class="info-val">운용기능사 (한국산업인력공단)</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Scholarship -->
+                <div class="tab-panel" data-panel="3">
+                    <div class="panel-inner panel-inner--scholarship">
+                        <div class="scholar-col">
+                            <div class="scholar-item">
+                                <span class="s-year">2024</span>
+                                <span class="s-name">성적우수 장학금</span>
+                            </div>
+                            <div class="scholar-divider"></div>
+                            <div class="scholar-item">
+                                <span class="s-year">2024</span>
+                                <span class="s-name">복지 장학금</span>
+                            </div>
+                        </div>
+                        <div class="scholar-col">
+                            <div class="scholar-item">
+                                <span class="s-year">2025</span>
+                                <span class="s-name">성적우수 장학금</span>
+                            </div>
+                            <div class="scholar-divider"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="tab-panel" data-panel="4">
+                    <div class="panel-inner panel-inner--skills">
+                        <div class="skill-col">
+                            <h3>Design</h3>
+                            <div class="skill-list">
+                                <div class="skill-item">
+                                    <div class="skill-info"><span>Photoshop</span><span>95%</span></div>
+                                    <div class="skill-bar"><div class="skill-progress"></div></div>
+                                </div>
+                                <div class="skill-item">
+                                    <div class="skill-info"><span>Illustrator</span><span>90%</span></div>
+                                    <div class="skill-bar"><div class="skill-progress"></div></div>
+                                </div>
+                                <div class="skill-item">
+                                    <div class="skill-info"><span>Figma</span><span>85%</span></div>
+                                    <div class="skill-bar"><div class="skill-progress"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="skill-col">
+                            <h3>Code</h3>
+                            <div class="skill-list">
+                                <div class="skill-item">
+                                    <div class="skill-info"><span>HTML5 / CSS3</span><span>80%</span></div>
+                                    <div class="skill-bar"><div class="skill-progress"></div></div>
+                                </div>
+                                <div class="skill-item">
+                                    <div class="skill-info"><span>Javascript</span><span>65%</span></div>
+                                    <div class="skill-bar"><div class="skill-progress"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="skill-col">
+                            <h3>Motion</h3>
+                            <div class="skill-list">
+                                <div class="skill-item">
+                                    <div class="skill-info"><span>After Effects</span><span>75%</span></div>
+                                    <div class="skill-bar"><div class="skill-progress"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════
+             § 3. PROJECTS SLIDER
+        ════════════════════════════════ -->
+        <section class="projects-section" id="projects">
+            <div class="projects-header reveal">
+                <h2 class="section-heading">Selected<br>Works.</h2>
+                <div class="slider-controls">
+                    <button class="slider-btn" id="slider-prev">←</button>
+                    <button class="slider-btn" id="slider-next">→</button>
+                </div>
+            </div>
+
+            <div class="slider-viewport" id="slider-viewport">
+                <div class="slider-track" id="slider-track">
+                    <!-- Card 1 -->
+                    <a href="./on-running-redesign/index.html" class="project-slide" id="slide-1">
+                        <div class="slide-thumb" style="background-image: url('on_running_thumb.jpg'); background-size: cover; background-position: center;"></div>
+                        <div class="slide-info">
+                            <div class="slide-meta">
+                                <span class="slide-year">2026</span>
+                                <span class="slide-cat">WEB&MOBILE</span>
+                            </div>
+                            <h3 class="slide-title">On Running<br>Website Renewal</h3>
+                        </div>
+                    </a>
+
+                    <!-- Card 2 -->
+                    <a href="./wiggle-wiggle/index.html" class="project-slide" id="slide-2">
+                        <div class="slide-thumb" style="background-image: url('wiggle_wiggle_thumb.jpg'); background-size: cover; background-position: center;"></div>
+                        <div class="slide-info">
+                            <div class="slide-meta">
+                                <span class="slide-year">2025</span>
+                                <span class="slide-cat">Brand Identity / 3D Design</span>
+                            </div>
+                            <h3 class="slide-title">Wiggle Wiggle<br>: AI Motion</h3>
+                        </div>
+                    </a>
+
+                    <!-- Card 3 -->
+                    <a href="./ogq-grafolio/index.html" class="project-slide" id="slide-3">
+                        <div class="slide-thumb" style="background-image: url('ogq_grafolio_thumb.jpg'); background-size: cover; background-position: center;"></div>
+                        <div class="slide-info">
+                            <div class="slide-meta">
+                                <span class="slide-year">2025</span>
+                                <span class="slide-cat">WEBSITE</span>
+                            </div>
+                            <h3 class="slide-title">OGQ Grafolio<br>Renewal</h3>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+            <div class="slider-progress"><div class="slider-progress-fill" id="slider-progress-fill"></div></div>
+        </section>
+
+        <!-- ════════════════════════════════
+             § 4. PHILOSOPHY
+        ════════════════════════════════ -->
+        <section class="philosophy-section">
+            <div class="philosophy-inner">
+                <div class="philosophy-left reveal">
+                    <span class="section-tag">Design Philosophy</span>
+                    <h2 class="philosophy-title">Design is a language that <em>solves problems.</em></h2>
+                </div>
+                <div class="philosophy-right reveal">
+                    <p class="philosophy-body">사용자의 행동을 이해하고, 브랜드의 가치를 시각화하며, 이를 실제 경험으로 구현하는 과정은 하나의 ‘대화’입니다. 저는 UI/UX 디자인과 브랜드 아이덴티티를 넘나들며, 사용자와 브랜드를 연결하는 최적의 경험을 설계합니다. 단순한 아름다움이 아닌, 명확한 목적과 기능을 가진 디자인을 추구합니다.</p>
+                    <div class="philosophy-skills">
+                        <span class="skill-tag">Interaction Design</span>
+                        <span class="skill-tag">Brand Identity</span>
+                        <span class="skill-tag">Visual Storytelling</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════
+             § 5. STATS
+        ════════════════════════════════ -->
+        <section class="stats-section">
+            <div class="stats-grid reveal">
+                <div class="stat-item" data-count="20">
+                    <span class="stat-value"><span class="count-num">0</span><span class="stat-suffix">+</span></span>
+                    <span class="stat-label">Projects Completed</span>
+                </div>
+                <div class="stat-item" data-count="5">
+                    <span class="stat-value"><span class="count-num">0</span><span class="stat-suffix"></span></span>
+                    <span class="stat-label">Awards Won</span>
+                </div>
+                <div class="stat-item" data-count="100">
+                    <span class="stat-value"><span class="count-num">0</span><span class="stat-suffix">%</span></span>
+                    <span class="stat-label">Passion Level</span>
+                </div>
+                <div class="stat-item" data-count="24">
+                    <span class="stat-value"><span class="count-num">0</span><span class="stat-suffix">h</span></span>
+                    <span class="stat-label">Creative Focus</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════
+             § 6. AWARDS
+        ════════════════════════════════ -->
+        <section class="awards-section">
+            <div class="awards-header reveal">
+                <span class="section-tag">Achievements</span>
+                <h2 class="section-heading">Awards &<br>Recognition.</h2>
+            </div>
+            <ul class="awards-list reveal">
+                <li class="award-item">
+                    <span class="award-year">2024</span>
+                    <span class="award-name">제 20회 전국 고교생 디자인/만화 실기대회 특선</span>
+                    <span class="award-cat">SUNGUI WOMEN'S UNIV.</span>
+                </li>
+                <li class="award-item">
+                    <span class="award-year">2023</span>
+                    <span class="award-name">제 13회 상명대학교 전국 중/고등학생 만화 애니메이션 공모전 입선</span>
+                    <span class="award-cat">SANGMYUNG UNIV.</span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- ════════════════════════════════
+             § 7. CONTACT
+        ════════════════════════════════ -->
+        <section class="contact-section" id="contact">
+            <div class="contact-header reveal">
+                <h2 class="contact-big-title">Let's build <em>something</em> together.</h2>
+            </div>
+            <div class="contact-cards">
+                <a href="mailto:hj690411@naver.com" class="contact-card reveal">
+                    <span class="contact-card-icon">✉</span>
+                    <span class="contact-card-title">Email</span>
+                    <span class="contact-card-desc">hj690411@naver.com</span>
+                    <span class="contact-card-arrow">↗</span>
+                </a>
+                <a href="tel:01051015844" class="contact-card reveal">
+                    <span class="contact-card-icon">☏</span>
+                    <span class="contact-card-title">Phone</span>
+                    <span class="contact-card-desc">010. 5101. 5844</span>
+                    <span class="contact-card-arrow">↗</span>
+                </a>
+                <a href="resume_songayun.pdf" download class="contact-card reveal">
+                    <span class="contact-card-icon">📄</span>
+                    <span class="contact-card-title">Resume</span>
+                    <span class="contact-card-desc">이력서 PDF 다운로드.</span>
+                    <span class="contact-card-arrow">↓</span>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-inner">
+            <span class="footer-copy">© 2026. Song Ayun. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top">
+        <span class="arrow">↑</span>
+        <span class="text">Top</span>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Inline JS -->
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+    gsap.registerPlugin(ScrollTrigger);
+
+    /* 1. CUSTOM CURSOR */
+    const dot  = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+    (function cursorLoop() {
+        if (dot) { dot.style.left = mx + 'px'; dot.style.top = my + 'px'; }
+        if (ring) {
+            rx += (mx - rx) * 0.10;
+            ry += (my - ry) * 0.10;
+            ring.style.left = rx + 'px';
+            ring.style.top  = ry + 'px';
+        }
+        requestAnimationFrame(cursorLoop);
+    })();
+    document.querySelectorAll('a, button, .project-slide, .award-item, .contact-card').forEach(el => {
+        el.addEventListener('mouseenter', () => ring && ring.classList.add('hover'));
+        el.addEventListener('mouseleave', () => ring && ring.classList.remove('hover'));
+    });
+
+    /* 2. THREE.JS — 3D GLASS BUBBLES */
+    const canvas = document.getElementById('bg-canvas');
+    if (canvas && typeof THREE !== 'undefined') {
+        const W = window.innerWidth, H = window.innerHeight;
+        const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+        renderer.setSize(W, H);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+        const scene  = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(50, W / H, 0.1, 100);
+        camera.position.z = 7;
+        const lightsData = [
+            { c: 0xff5020, i: 6, x: -3, y:  2, z: 4 },
+            { c: 0x6030ff, i: 6, x:  3, y: -2, z: 4 },
+            { c: 0xff2090, i: 5, x:  0, y:  3, z: 2 },
+            { c: 0x20dfff, i: 4, x:  0, y: -3, z: 3 },
+        ];
+        const lights = lightsData.map(d => {
+            const l = new THREE.PointLight(d.c, d.i, 25);
+            l.position.set(d.x, d.y, d.z);
+            l._ox = d.x; l._oy = d.y;
+            scene.add(l);
+            return l;
+        });
+        scene.add(new THREE.AmbientLight(0xffffff, 0.15));
+        const cfgs = [
+            { x: -2.2, y:  0.6, z:  0.0, r: 1.60, h: 0.04, s: 0.40 },
+            { x:  2.4, y: -0.7, z: -0.6, r: 1.25, h: 0.72, s: 0.52 },
+            { x:  0.3, y:  2.0, z: -1.2, r: 0.85, h: 0.88, s: 0.36 },
+            { x: -3.2, y: -1.8, z: -1.8, r: 0.70, h: 0.55, s: 0.62 },
+            { x:  3.8, y:  1.8, z: -0.6, r: 0.58, h: 0.10, s: 0.47 },
+        ];
+        const bubbles = cfgs.map(d => {
+            const grp = new THREE.Group();
+            const inner = new THREE.Mesh(
+                new THREE.SphereGeometry(d.r, 64, 64),
+                new THREE.MeshPhysicalMaterial({ color: new THREE.Color().setHSL(d.h, 0.8, 0.5), metalness: 0.15, roughness: 0.05, transparent: true, opacity: 0.28, side: THREE.DoubleSide })
+            );
+            const outer = new THREE.Mesh(
+                new THREE.SphereGeometry(d.r * 1.15, 32, 32),
+                new THREE.MeshBasicMaterial({ color: new THREE.Color().setHSL(d.h, 1, 0.55), transparent: true, opacity: 0.09, side: THREE.BackSide })
+            );
+            grp.add(inner, outer);
+            grp.position.set(d.x, d.y, d.z);
+            grp._o = { x: d.x, y: d.y }; grp._s = d.s; grp._h = d.h;
+            grp._im = inner.material; grp._gm = outer.material;
+            scene.add(grp);
+            return grp;
+        });
+        let mouseNX = 0, mouseNY = 0;
+        document.addEventListener('mousemove', e => {
+            mouseNX = (e.clientX / window.innerWidth)  * 2 - 1;
+            mouseNY = -(e.clientY / window.innerHeight) * 2 + 1;
+        });
+        let t = 0;
+        (function loop() {
+            requestAnimationFrame(loop);
+            t += 0.007;
+            bubbles.forEach((g, i) => {
+                const h = (g._h + t * 0.018) % 1.0;
+                g._im.color.setHSL(h, 0.8, 0.5);
+                g._gm.color.setHSL(h, 1.0, 0.55);
+                g.position.y = g._o.y + Math.sin(t * g._s + i * 1.5) * 0.27;
+                g.position.x = g._o.x + Math.cos(t * g._s * 0.65 + i) * 0.11 + mouseNX * 0.28;
+                g.position.y += mouseNY * 0.20;
+                g.rotation.x = t * 0.28 * g._s;
+                g.rotation.y = t * 0.38 * g._s;
+            });
+            lights.forEach((l, i) => {
+                const p = t * (0.4 + i * 0.1);
+                l.position.x = l._ox * Math.cos(p) - l._oy * Math.sin(p);
+                l.position.y = l._ox * Math.sin(p) + l._oy * Math.cos(p);
+            });
+            renderer.render(scene, camera);
+        })();
+        window.addEventListener('resize', () => {
+            const w = window.innerWidth, h = window.innerHeight;
+            renderer.setSize(w, h);
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+        });
+    }
+
+    /* 3. HERO ENTRANCE */
+    gsap.to('.h-line', { opacity: 1, y: 0, stagger: 0.14, duration: 1.5, ease: 'power4.out', delay: 0.35 });
+    gsap.to('.hero-desc', { opacity: 1, y: 0, duration: 1.2, ease: 'power3.out', delay: 0.9 });
+    gsap.to('.hero-bottom', { opacity: 1, duration: 1, ease: 'power2.out', delay: 1.2 });
+    gsap.fromTo('.hero-tag', { opacity: 0, y: -20 }, { opacity: 1, y: 0, stagger: 0.15, duration: 1, ease: 'power3.out', delay: 1.0 });
+    gsap.fromTo('.header', { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out', delay: 0.2 });
+
+    /* 4. SCROLL REVEALS */
+    gsap.utils.toArray('.reveal').forEach(el => {
+        gsap.fromTo(el, { opacity: 0, y: 50 }, {
+            opacity: 1, y: 0, duration: 1.1, ease: 'power3.out',
+            scrollTrigger: { trigger: el, start: 'top 85%', toggleActions: 'play none none none' }
+        });
+    });
+
+    /* 5. PROCESS TABS */
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+    const tabIndicator = document.querySelector('.tab-indicator');
+    function setIndicator(btn) {
+        if (!tabIndicator || !btn) return;
+        tabIndicator.style.left  = btn.offsetLeft + 'px';
+        tabIndicator.style.width = btn.offsetWidth + 'px';
+    }
+    const firstBtn = document.querySelector('.tab-btn.active');
+    if (firstBtn) setTimeout(() => setIndicator(firstBtn), 50);
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const idx = parseInt(btn.dataset.tab);
+            tabBtns.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            setIndicator(btn);
+            tabPanels.forEach(p => {
+                if (p.classList.contains('active')) {
+                    p.style.opacity = 0;
+                    p.style.transform = 'translateY(10px)';
+                    setTimeout(() => { p.classList.remove('active'); p.style.display = 'none'; }, 300);
+                }
+            });
+            setTimeout(() => {
+                const target = document.querySelector(`.tab-panel[data-panel="${idx}"]`);
+                if (target) {
+                    target.style.display = 'block';
+                    target.style.opacity = 0;
+                    target.style.transform = 'translateY(20px)';
+                    target.classList.add('active');
+                    requestAnimationFrame(() => {
+                        target.style.transition = 'opacity .45s ease, transform .45s ease';
+                        target.style.opacity = 1;
+                        target.style.transform = 'translateY(0)';
+                        if (idx === 4) {
+                            const bars = target.querySelectorAll('.skill-progress');
+                            bars.forEach(bar => {
+                                const finalWidth = bar.parentElement.previousElementSibling.lastElementChild.textContent;
+                                bar.style.width = finalWidth;
+                            });
+                        }
+                    });
+                }
+            }, 320);
+        });
+    });
+
+    /* 6. SLIDER */
+    const viewport = document.getElementById('slider-viewport');
+    const track = document.getElementById('slider-track');
+    const prevBtn = document.getElementById('slider-prev');
+    const nextBtn = document.getElementById('slider-next');
+    const progressFill = document.getElementById('slider-progress-fill');
+    if (track && viewport) {
+        const slides = track.querySelectorAll('.project-slide');
+        const slideW = slides[0] ? slides[0].offsetWidth + 32 : 452;
+        let currentX = 0;
+        const maxX = () => -(track.scrollWidth - viewport.offsetWidth - parseFloat(getComputedStyle(viewport).paddingLeft));
+        function applyTranslate(x, animate = true) {
+            currentX = Math.min(Math.max(x, maxX()), 0);
+            track.style.transition = animate ? 'transform .6s cubic-bezier(.25,1,.5,1)' : 'none';
+            track.style.transform = `translateX(${currentX}px)`;
+            if (progressFill) {
+                const pct = Math.abs(currentX) / Math.abs(maxX()) * (100 - 33.33) + 33.33;
+                progressFill.style.width = Math.min(pct, 100) + '%';
+            }
+        }
+        prevBtn && prevBtn.addEventListener('click', () => applyTranslate(currentX + slideW));
+        nextBtn && nextBtn.addEventListener('click', () => applyTranslate(currentX - slideW));
+        let startX = 0, startTranslate = 0, dragging = false;
+        viewport.addEventListener('mousedown', e => {
+            dragging = true; startX = e.clientX; startTranslate = currentX; viewport.classList.add('dragging');
+        });
+        window.addEventListener('mousemove', e => {
+            if (!dragging) return;
+            applyTranslate(startTranslate + (e.clientX - startX), false);
+        });
+        window.addEventListener('mouseup', () => { dragging = false; viewport.classList.remove('dragging'); });
+    }
+
+    /* 7. COUNT-UP */
+    const statItems = document.querySelectorAll('.stat-item[data-count]');
+    const countObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (!entry.isIntersecting) return;
+            const el = entry.target;
+            const target = parseInt(el.dataset.count);
+            const numEl = el.querySelector('.count-num');
+            if (!numEl || el._counted) return;
+            el._counted = true;
+            const duration = 1800; const start = performance.now();
+            function update(now) {
+                const progress = Math.min((now - start) / duration, 1);
+                const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                numEl.textContent = Math.round(ease * target).toLocaleString();
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        });
+    }, { threshold: 0.4 });
+    statItems.forEach(item => countObserver.observe(item));
+
+    /* 8. BACK TO TOP */
+    const backToTop = document.getElementById('back-to-top');
+    if (backToTop) {
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) backToTop.classList.add('active');
+            else backToTop.classList.remove('active');
+        });
+        backToTop.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    }
+});
+    </script>
+</body>
+</html>
