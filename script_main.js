@@ -250,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const slides = track.querySelectorAll('.project-slide');
         const slideW = slides[0] ? slides[0].offsetWidth + 32 : 452; // card + gap
         let currentX = 0;
-        const maxX   = () => -(track.scrollWidth - viewport.offsetWidth - parseFloat(getComputedStyle(viewport).paddingLeft));
+        const maxX   = () => -(track.scrollWidth - viewport.offsetWidth + parseFloat(getComputedStyle(viewport).paddingLeft) * 2);
 
         function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
 
